@@ -10,7 +10,7 @@ namespace PizzaApplication
     internal class Program
     {
         // Source of the input file
-        private const string PizzaUrl = "https://github.com/brswanson/PizzaApplication/blob/master/PizzaApplication/Input/pizzas.json";
+        private const string PizzaUrl = "https://raw.githubusercontent.com/brswanson/JSON-Parsing-Example/master/PizzaApplication/Input/pizzas.json";
 
         /// <summary>
         ///     Downloads a JSON file of pizza toppings. Ranks topping combinations by frequency.
