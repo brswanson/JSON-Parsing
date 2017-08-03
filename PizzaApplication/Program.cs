@@ -33,7 +33,7 @@ namespace PizzaApplication
             var rankPad = pizzaList.Count.ToString().Length;
             var occurencePad = pizzaList.Max(c => c.Occurences).ToString().Length;
 
-            for (var i = 0; i < maxRank; i++)
+            for (var i = 0; i < Math.Min(maxRank, pizzaList.Count); i++)
             {
                 var pizza = pizzaList[i];
                 Console.WriteLine(
