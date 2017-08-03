@@ -11,11 +11,13 @@ namespace PizzaApplication
         }
 
         public List<string> Toppings { get; set; }
-
         public string ToppingsId => _ToppingsId ?? (_ToppingsId = string.Join(string.Empty, Toppings));
-
         private string _ToppingsId { get; set; }
-
         public int Occurences { get; set; }
+
+        public override string ToString()
+        {
+            return string.Join(", ", Toppings);
+        }
     }
 }

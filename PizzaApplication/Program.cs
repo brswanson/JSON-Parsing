@@ -24,7 +24,7 @@ namespace PizzaApplication
 
             if (File.Exists(tempSourceLocation)) File.Delete(tempSourceLocation);
 
-            Console.WriteLine("Press any key to exit ...");
+            Console.WriteLine("Press the Enter key to exit ...");
             Console.ReadLine();
         }
 
@@ -37,7 +37,7 @@ namespace PizzaApplication
             {
                 var pizza = pizzaList[i];
                 Console.WriteLine(
-                    $"Rank[{i.ToString().PadLeft(rankPad, '0')}] Occurences[{pizza.Occurences.ToString().PadLeft(occurencePad, '0')}] Toppings: {string.Join(", ", pizza.Toppings.ToArray())}");
+                    $"Rank[{i.ToString().PadLeft(rankPad, '0')}] Occurences[{pizza.Occurences.ToString().PadLeft(occurencePad, '0')}] Toppings: {pizza}");
             }
         }
 
