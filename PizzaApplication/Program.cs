@@ -11,6 +11,7 @@ namespace PizzaApplication
     {
         // Source of the input file
         private const string PizzaUrl = "https://raw.githubusercontent.com/brswanson/JSON-Parsing-Example/master/PizzaApplication/Input/pizzas.json";
+        private const int MaxRank = 20;
 
         /// <summary>
         ///     Downloads a JSON file of pizza toppings. Ranks topping combinations by frequency.
@@ -28,16 +29,14 @@ namespace PizzaApplication
             Console.ReadLine();
         }
 
-        public static void WriteOutPizzas(List<Pizza> pizzaList, int maxRank = 20)
+        public static void WriteOutPizzas(KeyValuePair<string, int>[] pizzaArray, int maxRank = MaxRank)
         {
-            var rankPad = pizzaList.Count.ToString().Length;
-            var occurencePad = pizzaList.Max(c => c.Occurences).ToString().Length;
+            var pizzasOrderedByCount = pizzaArray.OrderByDescending(p => p.Value).ToArray();
 
-            for (var i = 0; i < Math.Min(maxRank, pizzaList.Count); i++)
+            for (var i = 0; i < Math.Min(maxRank, pizzaArray.Length); i++)
             {
-                var pizza = pizzaList[i];
-                Console.WriteLine(
-                    $"Rank[{i.ToString().PadLeft(rankPad, '0')}] Occurences[{pizza.Occurences.ToString().PadLeft(occurencePad, '0')}] Toppings: {pizza}");
+                var pizza = pizzasOrderedByCount[i];
+                Console.WriteLine($"Rank[{i + 1}] Occurences[{pizza.Value}] Toppings: {pizza.Key}");
             }
         }
 
@@ -53,18 +52,20 @@ namespace PizzaApplication
             return tempSourceLocation;
         }
 
-        public static List<Pizza> GetPizzas(string filePath)
+        public static KeyValuePair<string, int>[] GetPizzas(string filePath)
         {
-            var pizzaList = new List<Pizza>();
+            var pizzaDict = new Dictionary<string, int>();
             var jsonData = GetJson(filePath);
 
             foreach (var obj in jsonData)
             {
-                var newPizza = GetPizza(obj);
-                MergePizzas(pizzaList, newPizza);
+                var pizzaKey = GetPizzaToppings(obj);
+
+                pizzaDict.TryGetValue(pizzaKey, out int currentCount);
+                pizzaDict[pizzaKey] = currentCount + 1;
             }
 
-            return pizzaList.OrderByDescending(c => c.Occurences).ToList();
+            return pizzaDict.ToArray();
         }
 
         public static dynamic GetJson(string filePath)
@@ -78,24 +79,17 @@ namespace PizzaApplication
             }
         }
 
-        public static Pizza GetPizza(dynamic jsonObj)
+        public static string GetPizzaToppings(dynamic jsonObj)
         {
-            var toppings = new List<string>();
+            // HashSet prevents duplicate toppings
+            var toppings = new HashSet<string>();
 
             foreach (var topping in jsonObj.toppings)
+            {
                 toppings.Add(topping.ToString());
+            }
 
-            return new Pizza(toppings);
-        }
-
-        public static void MergePizzas(List<Pizza> currentPizzas, Pizza newPizza)
-        {
-            var existingPizza = currentPizzas.FirstOrDefault(c => c.ToppingsId == newPizza.ToppingsId);
-
-            if (existingPizza == null)
-                currentPizzas.Add(newPizza);
-            else
-                existingPizza.Occurences++;
+            return string.Join(", ", toppings.OrderBy(p => p.ToString()).ToList());
         }
     }
 }
